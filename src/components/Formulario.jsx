@@ -1,5 +1,6 @@
 import React from 'react'
 import { Formik, Form, Field } from 'formik'
+import { useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 import Alerta from './Alerta'
 
@@ -20,10 +21,24 @@ const Formulario = () => {
       .integer('El número no es valido')
       .typeError('El número no es valido')
   })
+  const navigate = useNavigate();
 
   //methods
-  const handleSubmit = (value) => { 
-
+  const handleSubmit = async (value) => { 
+    try {
+      const url = 'http://localhost:4000/clientes'
+      const respuesta = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(value),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      const resultado = await respuesta.json();
+      navigate('/clientes')
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -37,7 +52,10 @@ const Formulario = () => {
           telefono: '',
           notas: '',
         }}
-        onSubmit={(value) => handleSubmit(value)}
+        onSubmit={async (value, { resetForm }) => {
+          await handleSubmit(value)
+          resetForm()
+        }}
         validationSchema={nuevoClienteSchema}
       >
         {({errors, touched}) => (
