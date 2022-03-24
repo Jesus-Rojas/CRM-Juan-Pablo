@@ -5,17 +5,34 @@ const Inicio = () => {
   // hooks
   const [clientes, setClientes] = useState([])
 
-  useEffect(() => {
-    const obtenerClientesAPI = async () => {
+  //methods
+  const handleDelete = async (id) => { 
+    const confirmar = confirm('¿Desea eliminar este cliente?')
+    if (confirmar) {
       try {
-        const url = 'http://localhost:4000/clientes'
-        const respuesta = await fetch(url)
-        const resultado = await respuesta.json()
-        setClientes(resultado)
+          const url = `${import.meta.env.VITE_API_URL}/${id}`
+          const respuesta = await fetch(url, {
+            method: 'DELETE',
+          })
+          await respuesta.json()
+          obtenerClientesAPI();
       } catch (error) {
         console.log(error)
       }
     }
+  }
+  const obtenerClientesAPI = async () => {
+    try {
+      const url = import.meta.env.VITE_API_URL
+      const respuesta = await fetch(url)
+      const resultado = await respuesta.json()
+      setClientes(resultado)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
     obtenerClientesAPI();
   }, [])
   
@@ -37,6 +54,7 @@ const Inicio = () => {
             <Cliente 
               key={cliente.id}
               cliente={cliente}
+              handleDelete={handleDelete}
             />
           ))}
         </tbody>
