@@ -5,7 +5,7 @@ import * as Yup from 'yup'
 import Alerta from './Alerta'
 
 
-const Formulario = () => {
+const Formulario = ({ cliente }) => {
   const nuevoClienteSchema = Yup.object().shape({
     nombre: Yup.string()
       .min(3, 'El nombre es muy corto')
@@ -46,12 +46,13 @@ const Formulario = () => {
       <h1 className='text-gray-600 font-bold text-xl uppercase text-center'>Agregar Cliente</h1>
       <Formik
         initialValues={{
-          nombre: '',
-          empresa: '',
-          email: '',
-          telefono: '',
-          notas: '',
+          nombre: cliente?.nombre ?? '',
+          empresa: cliente?.empresa ?? '',
+          email: cliente?.email ?? '',
+          telefono: cliente?.telefono ?? '',
+          notas: cliente?.notas ?? '',
         }}
+        enableReinitialize={true}
         onSubmit={async (value, { resetForm }) => {
           await handleSubmit(value)
           resetForm()
@@ -150,6 +151,10 @@ const Formulario = () => {
       </Formik>
     </div>
   )
+}
+
+Formulario.defaultProps = {
+  cliente: {}
 }
 
 export default Formulario

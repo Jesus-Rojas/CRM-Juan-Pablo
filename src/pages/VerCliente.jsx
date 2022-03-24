@@ -14,7 +14,6 @@ const VerCliente = () => {
         const url = `http://localhost:4000/clientes/${id}`
         const respuesta = await fetch(url)
         const resultado = await respuesta.json()
-        console.log(resultado)
         setCliente(resultado)
       } catch (error) {
         console.log(error)
